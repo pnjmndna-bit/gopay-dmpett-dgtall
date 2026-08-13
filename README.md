@@ -1,1 +1,0 @@
-# gopay-dmpett-dgtall
