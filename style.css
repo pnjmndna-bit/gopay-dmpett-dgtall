@@ -283,6 +283,7 @@ button {
 
 .info-title {
     font-size: 10px;
+    font-weight: 500;
 
     line-height: 1.4;
 
@@ -358,6 +359,7 @@ button {
 
 .partner-title {
     font-size: 10px;
+    font-weight: 500;
 
     color: rgba(255,255,255,.72);
 
@@ -437,7 +439,7 @@ button {
 
     .info-title,
     .partner-title {
-        font-size: 9px;
+        font-size: 12px;
     }
 
     .official-logo {
