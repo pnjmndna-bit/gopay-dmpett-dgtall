@@ -1,418 +1,496 @@
-document.addEventListener(
-'gesturestart',
-function(e){
-    e.preventDefault();
-}
-);
+/* =====================================================
+   GOPAY UI - FULL SCRIPT
+===================================================== */
 
-document.addEventListener(
-'touchmove',
-function(e){
-    e.preventDefault();
-},
-{ passive:false }
-);
+document.addEventListener("DOMContentLoaded", () => {
 
-/* ===================== */
-/* POSTER SLIDER */
-/* AUTO + SWIPE + BUTTON */
-/* ===================== */
 
-const slides =
-document.querySelectorAll(
-".banner-slide"
-);
+    /* =================================================
+       JAM INDONESIA
+    ================================================= */
 
-const dots =
-document.querySelectorAll(
-".dot"
-);
+    const wibTime = document.getElementById("wibTime");
+    const witaTime = document.getElementById("witaTime");
+    const witTime = document.getElementById("witTime");
 
-const prevBtn =
-document.querySelector(
-".prev"
-);
 
-const nextBtn =
-document.querySelector(
-".next"
-);
+    function updateIndonesiaTime() {
 
-let currentSlide = 0;
-let startX = 0;
-let endX = 0;
+        const now = new Date();
 
-/* tampil slide */
-function showSlide(index){
 
-    slides.forEach(slide=>{
+        /* ================= WIB ================= */
 
-        slide.classList.remove(
-        "active"
-        );
+        if (wibTime) {
 
-    });
+            const wib = new Intl.DateTimeFormat(
+                "id-ID",
+                {
+                    timeZone: "Asia/Jakarta",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                }
+            ).format(now);
 
-    dots.forEach(dot=>{
+            wibTime.textContent = `${wib} WIB`;
 
-        dot.classList.remove(
-        "active"
-        );
-
-    });
-
-    slides[index]
-    .classList.add(
-    "active"
-    );
-
-    if(dots[index]){
-
-        dots[index]
-        .classList.add(
-        "active"
-        );
-
-    }
-
-}
-
-/* ===================== */
-/* AUTO SLIDE */
-/* ===================== */
-
-if(slides.length > 0){
-
-    setInterval(()=>{
-
-        currentSlide++;
-
-        if(
-        currentSlide >=
-        slides.length
-        ){
-            currentSlide = 0;
         }
 
-        showSlide(
-        currentSlide
-        );
 
-    },2500);
+        /* ================= WITA ================= */
 
-}
+        if (witaTime) {
 
-/* ===================== */
-/* TOMBOL NEXT */
-/* ===================== */
+            const wita = new Intl.DateTimeFormat(
+                "id-ID",
+                {
+                    timeZone: "Asia/Makassar",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                }
+            ).format(now);
 
-if(nextBtn){
+            witaTime.textContent = `${wita} WITA`;
 
-    nextBtn.addEventListener(
-    "click",
-    ()=>{
-
-        currentSlide++;
-
-        if(
-        currentSlide >=
-        slides.length
-        ){
-            currentSlide = 0;
         }
 
-        showSlide(
-        currentSlide
-        );
 
-    }
-    );
+        /* ================= WIT ================= */
 
-}
+        if (witTime) {
 
-/* ===================== */
-/* TOMBOL PREV */
-/* ===================== */
+            const wit = new Intl.DateTimeFormat(
+                "id-ID",
+                {
+                    timeZone: "Asia/Jayapura",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                }
+            ).format(now);
 
-if(prevBtn){
+            witTime.textContent = `${wit} WIT`;
 
-    prevBtn.addEventListener(
-    "click",
-    ()=>{
-
-        currentSlide--;
-
-        if(
-        currentSlide < 0
-        ){
-            currentSlide =
-            slides.length - 1;
         }
 
-        showSlide(
-        currentSlide
+    }
+
+
+    /* Jalankan langsung */
+
+    updateIndonesiaTime();
+
+
+    /* Update setiap 1 detik */
+
+    setInterval(
+        updateIndonesiaTime,
+        1000
+    );
+
+
+
+    /* =================================================
+       PROMO SLIDER
+    ================================================= */
+
+    const promoSlider =
+        document.querySelector(".promo-grid");
+
+    const promoBanners =
+        document.querySelectorAll(".promo-banner");
+
+
+    let promoIndex = 0;
+
+    let promoTimer = null;
+
+
+    /* =================================================
+       SLIDE FUNCTION
+    ================================================= */
+
+    function slidePromo() {
+
+        if (
+            !promoSlider ||
+            promoBanners.length <= 1
+        ) {
+            return;
+        }
+
+
+        promoIndex++;
+
+
+        if (
+            promoIndex >=
+            promoBanners.length
+        ) {
+
+            promoIndex = 0;
+
+        }
+
+
+        promoSlider.scrollTo({
+
+            left:
+                promoBanners[promoIndex].offsetLeft,
+
+            behavior: "smooth"
+
+        });
+
+    }
+
+
+
+    /* =================================================
+       START AUTO SLIDE
+    ================================================= */
+
+    function startPromoSlider() {
+
+        clearInterval(promoTimer);
+
+
+        if (
+            !promoSlider ||
+            promoBanners.length <= 1
+        ) {
+            return;
+        }
+
+
+        promoTimer = setInterval(
+
+            slidePromo,
+
+            4000
+
         );
 
     }
-    );
 
-}
 
-/* ===================== */
-/* KLIK TITIK */
-/* ===================== */
+    startPromoSlider();
 
-dots.forEach(
-(dot,index)=>{
 
-    dot.addEventListener(
-    "click",
-    ()=>{
 
-        currentSlide =
-        index;
+    /* =================================================
+       PAUSE SAAT DISENTUH
+    ================================================= */
 
-        showSlide(
-        currentSlide
-        );
+    if (promoSlider) {
 
-    }
-    );
 
-});
+        promoSlider.addEventListener(
 
-/* ===================== */
-/* SWIPE */
-/* ===================== */
+            "touchstart",
 
-const bannerBox =
-document.querySelector(
-".banner-box"
-);
+            () => {
 
-if(bannerBox){
+                clearInterval(
+                    promoTimer
+                );
 
-    bannerBox.addEventListener(
-    "touchstart",
-    (e)=>{
+            },
 
-        startX =
-        e.touches[0]
-        .clientX;
-
-    }
-    );
-
-    bannerBox.addEventListener(
-    "touchend",
-    (e)=>{
-
-        endX =
-        e.changedTouches[0]
-        .clientX;
-
-        let distance =
-        startX - endX;
-
-        /* geser kiri */
-        if(distance > 50){
-
-            currentSlide++;
-
-            if(
-            currentSlide >=
-            slides.length
-            ){
-                currentSlide = 0;
+            {
+                passive: true
             }
 
-            showSlide(
-            currentSlide
+        );
+
+
+        promoSlider.addEventListener(
+
+            "touchend",
+
+            () => {
+
+                startPromoSlider();
+
+            },
+
+            {
+                passive: true
+            }
+
+        );
+
+    }
+
+
+
+    /* =================================================
+       DETECT MANUAL SWIPE
+    ================================================= */
+
+    if (promoSlider) {
+
+
+        promoSlider.addEventListener(
+
+            "scroll",
+
+            () => {
+
+                const scrollLeft =
+                    promoSlider.scrollLeft;
+
+
+                let closestIndex = 0;
+
+                let closestDistance =
+                    Infinity;
+
+
+                promoBanners.forEach(
+
+                    (banner, index) => {
+
+                        const distance =
+                            Math.abs(
+                                banner.offsetLeft -
+                                scrollLeft
+                            );
+
+
+                        if (
+                            distance <
+                            closestDistance
+                        ) {
+
+                            closestDistance =
+                                distance;
+
+                            closestIndex =
+                                index;
+
+                        }
+
+                    }
+
+                );
+
+
+                promoIndex =
+                    closestIndex;
+
+            },
+
+            {
+                passive: true
+            }
+
+        );
+
+    }
+
+
+
+    /* =================================================
+       MINI LOADING
+    ================================================= */
+
+    const miniLoading =
+        document.createElement("div");
+
+
+    miniLoading.className =
+        "mini-loading";
+
+
+    miniLoading.innerHTML = `
+
+        <div class="mini-loading-box">
+
+            <div class="mini-spinner"></div>
+
+            <span>Memuat...</span>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        miniLoading
+    );
+
+
+
+    /* =================================================
+       REDIRECT KE LOADING.HTML
+    ================================================= */
+
+    function goToLoading(element) {
+
+
+        /* Cegah klik berkali-kali */
+
+        if (
+            document.body.classList.contains(
+                "is-loading"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        document.body.classList.add(
+            "is-loading"
+        );
+
+
+        /* Efek tekan */
+
+        if (element) {
+
+            element.classList.add(
+                "clicked"
             );
 
         }
 
-        /* geser kanan */
-        if(distance < -50){
 
-            currentSlide--;
+        /* Tampilkan loading */
 
-            if(
-            currentSlide < 0
-            ){
-                currentSlide =
-                slides.length - 1;
-            }
-
-            showSlide(
-            currentSlide
-            );
-
-        }
-
-    }
-    );
-
-}
-
-/* ========================= */
-/* RESET LOADING SAAT BACK */
-/* ========================= */
-
-window.addEventListener(
-"pageshow",
-()=>{
-
-    const loadingBox =
-    document.getElementById(
-    "loadingBox"
-    );
-
-    if(loadingBox){
-
-        loadingBox.style.display =
-        "none";
-
-    }
-
-}
-);
-
-function updateWIB(){
-
-    const now = new Date();
-
-    const jam =
-    now.getHours()
-    .toString()
-    .padStart(2,"0");
-
-    const menit =
-    now.getMinutes()
-    .toString()
-    .padStart(2,"0");
-
-    const timeBox =
-    document.getElementById(
-    "timeBox"
-    );
-
-    if(timeBox){
-
-        timeBox.innerText =
-        `${jam}:${menit}`;
-
-    }
-
-}
-
-updateWIB();
-
-setInterval(
-updateWIB,
-1000
-);
-
-const marqueeText =
-document.getElementById("marqueeText");
-
-function randomPhone(){
-
-    const prefix = [
-        "0812","0813","0821","0822",
-        "0852","0853","0877","0878"
-    ];
-
-    const awal =
-    prefix[Math.floor(Math.random() * prefix.length)];
-
-    const akhir =
-    Math.floor(1000 + Math.random() * 9000);
-
-    return `${awal}***${akhir}`;
-}
-
-const aktivitas = [
-    "Telah Berhasil Verifikasi Akun",
-    "Telah Mengaktifkan GOPAY PayLater",
-    "Telah Mencairkan Pinjaman",
-    "Telah Memperoleh GOPAY Hadiah",
-    "Telah Mengaktifkan GOPAY Asuransi"
-];
-
-function updateMarquee(){
-
-    const nomor = randomPhone();
-
-    const teks =
-    aktivitas[Math.floor(Math.random() * aktivitas.length)];
-
-    marqueeText.innerText =
-    `🔔 ${nomor} ${teks}`;
-
-    marqueeText.classList.remove("run");
-
-    void marqueeText.offsetWidth;
-
-    marqueeText.classList.add("run");
-}
-
-updateMarquee();
-
-marqueeText.addEventListener("animationiteration", () => {
-    updateMarquee();
-});
-
-/* ===================== */
-/* MENU CLICK */
-/* ===================== */
-
-const menuBox =
-document.querySelectorAll(
-".menu-box"
-);
-
-menuBox.forEach((box)=>{
-
-    box.addEventListener(
-    "click",
-    ()=>{
-
-        /* efek sentuh */
-        box.style.transform =
-        "scale(0.96)";
-
-        box.style.filter =
-        "brightness(0.9)";
-
-        setTimeout(()=>{
-
-            box.style.transform =
-            "scale(1)";
-
-            box.style.filter =
-            "brightness(1)";
-
-        },150);
-
-        /* tampil loading */
-        const loadingBox =
-        document.getElementById(
-        "loadingBox"
+        miniLoading.classList.add(
+            "show"
         );
 
-        loadingBox.style.display =
-        "flex";
 
-        /* pindah halaman */
-        setTimeout(()=>{
+        /* Redirect */
+
+        setTimeout(() => {
 
             window.location.href =
-            "form.html";
+                "loading.html";
 
-        },2000);
+        }, 1000);
 
     }
+
+
+
+    /* =================================================
+       SERVICE BUTTON
+    ================================================= */
+
+    const serviceButtons =
+        document.querySelectorAll(
+            ".service"
+        );
+
+
+    serviceButtons.forEach(
+
+        button => {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    goToLoading(
+                        this
+                    );
+
+                }
+            );
+
+        }
+
+    );
+
+
+
+    /* =================================================
+       PROMO ITEM
+    ================================================= */
+
+    const promoItems =
+        document.querySelectorAll(
+            ".promo-item"
+        );
+
+
+    promoItems.forEach(
+
+        item => {
+
+            item.addEventListener(
+                "click",
+                function () {
+
+                    goToLoading(
+                        this
+                    );
+
+                }
+            );
+
+        }
+
+    );
+
+
+
+    /* =================================================
+       PROMO BANNER
+    ================================================= */
+
+    promoBanners.forEach(
+
+        banner => {
+
+            banner.addEventListener(
+                "click",
+                function () {
+
+                    goToLoading(
+                        this
+                    );
+
+                }
+            );
+
+        }
+
+    );
+
+
+
+    /* =================================================
+       OPTIONAL:
+       STOP SLIDER SAAT LOADING
+    ================================================= */
+
+    document.addEventListener(
+        "visibilitychange",
+        () => {
+
+            if (
+                document.hidden
+            ) {
+
+                clearInterval(
+                    promoTimer
+                );
+
+            } else {
+
+                startPromoSlider();
+
+            }
+
+        }
     );
 
 });
